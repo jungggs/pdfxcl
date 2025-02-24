@@ -1,0 +1,43 @@
+import streamlit as st
+import pandas as pd
+import pdfplumber
+
+def extract_data_from_pdf(pdf_file):
+    with pdfplumber.open(pdf_file) as pdf:
+        text = "\n".join([page.extract_text() for page in pdf.pages if page.extract_text()])
+
+    # Simulasi parsing data dari teks PDF
+    data = {
+        "Order Number": ["#1634"],
+        "Customer Name": ["Destri Wardhani"],
+        "Email": ["destri_kusuma@yahoo.com"],
+        "Phone": ["+62 856-1342-999"],
+        "Shipping Address": ["Jl. Zeni AD I No. 1 RT006/03, Rawa Jati, Pancoran, Jakarta Selatan, JK 12750, Indonesia"],
+        "Billing Address": ["Same as shipping address"],
+        "Product Name": ["Bamboo Spice Apron - SALE", "Bamboo Spice Oven Mitt - SALE"],
+        "Category": ["HOMEWARES", "HOMEWARES"],
+        "SKU": ["CK04BBS", "CK06BBS"],
+        "Quantity": [1, 1],
+        "Price": [120000, 78000],
+        "Subtotal": [198000],
+        "Shipping Cost": [35000],
+        "Total": [233000],
+        "Payment Method": ["DOKU Payment"],
+        "Payment Status": ["Paid"]
+    }
+    return pd.DataFrame(data)
+
+st.title("PDF to Excel Converter")
+uploaded_file = st.file_uploader("Upload PDF", type="pdf")
+
+if uploaded_file:
+    df = extract_data_from_pdf(uploaded_file)
+    st.write("### Data yang Diekstrak")
+    st.dataframe(df)
+
+    # Simpan ke Excel
+    excel_path = "order_details.xlsx"
+    df.to_excel(excel_path, index=False)
+
+    with open(excel_path, "rb") as f:
+        st.download_button("Download Excel", f, file_name="order_details.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
