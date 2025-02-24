@@ -7,7 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1RZhRTTT3AkYXWOSFP4Xmp2YEgIbSFjLt
 """
 
-!pip install pandas openpyxl
 
 import pandas as pd
 from openpyxl import Workbook
